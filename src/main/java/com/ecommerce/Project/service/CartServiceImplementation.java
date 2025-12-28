@@ -105,25 +105,32 @@ public class CartServiceImplementation implements CartService {
 
     }
 
+
     @Override
     public List<CartDTO> getAllCarts() {
         List<Cart> carts = cartRepository.findAll();
 
         if (carts.isEmpty()) {
-            throw new APIException("No carts found");
+            throw new APIException("No cart exists");
         }
 
-        List<CartDTO> cartDTOS = carts.stream()
-                .map(cart -> {
-                    CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
-                    List<ProductDTO> products = cart.getCartItems().stream()
-                            .map(p -> modelMapper.map(p.getProduct(), ProductDTO.class))
-                            .toList();
-                    cartDTO.setProducts(products);
-                    return cartDTO;
-                }).toList();
+        List<CartDTO> cartDTOs = carts.stream().map(cart -> {
+            CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 
-        return cartDTOS;
+            List<ProductDTO> products = cart.getCartItems().stream().map(cartItem -> {
+                ProductDTO productDTO = modelMapper.map(cartItem.getProduct(), ProductDTO.class);
+                productDTO.setQuantity(cartItem.getQuantity()); 
+                return productDTO;
+            }).collect(Collectors.toList());
+
+
+            cartDTO.setProducts(products);
+
+            return cartDTO;
+
+        }).collect(Collectors.toList());
+
+        return cartDTOs;
     }
 
     @Override
@@ -230,7 +237,7 @@ public class CartServiceImplementation implements CartService {
 
         cart.setTotalPrice(cart.getTotalPrice() - (cartItem.getProductPrice() * cartItem.getQuantity()));
 
-        cartItemRepository.deleteCartItemByProductIdAndCartId(cartId);
+        cartItemRepository.deleteCartItemByProductIdAndCartId(cartId,productId);
         return "Product" + cartItem.getProduct().getProductName() + "removed from the cart";
     }
 
