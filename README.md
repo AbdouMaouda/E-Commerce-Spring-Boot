@@ -24,7 +24,7 @@ A production-ready RESTful API built with Spring Boot supporting user registrati
 - PostgreSQL running locally
 - Maven
 ### 1. Clone the repository
-git clone https://github.com/AbdouMaouda/ecommerce-backend.git
+git clone [https://github.com/AbdouMaouda/ecommerce-backend.git](https://github.com/AbdouMaouda/E-Commerce-Spring-Boot)
 cd ecommerce-backend
 ### 2. Set up environment variables
 Create an application.properties file in src/main/resources/:
